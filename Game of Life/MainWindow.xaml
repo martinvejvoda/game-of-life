@@ -1,0 +1,69 @@
+﻿<Window x:Class="Game_of_Life.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Game_of_Life"
+        mc:Ignorable="d"
+        Title="Game of Life" Height="600" Width="750" Background="AntiqueWhite"
+        SizeChanged="Window_SizeChanged">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="110"/>
+            <RowDefinition Height="180"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="75"/>
+        </Grid.ColumnDefinitions>
+
+        <Canvas x:Name="gameCanvas" Margin="10,10,10,10" Grid.RowSpan="10" Background="White" ClipToBounds="True" MouseLeftButtonDown="gameCanvas_MouseLeftButtonDown" MouseLeftButtonUp="gameCanvas_MouseLeftButtonUp" MouseMove="gameCanvas_MouseMove"/>
+
+        <Button x:Name="playPauseButtton" Content="Start / pauza" Grid.Column="1" Margin="0,0,0,0" HorizontalAlignment="Center" Width="125" Height="20" VerticalAlignment="Center" Grid.ColumnSpan="2" Grid.Row="0" Click="playPauseButtton_Click"/>
+        <Button x:Name="minusButton" Content="-" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Center" Width="50" Height="20" Click="minusButton_Click"/>
+        <Button x:Name="plusButton" Content="+" Grid.Column="2" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" VerticalAlignment="Center" Width="50" Height="20" Click="plusButton_Click"/>
+
+        <Canvas x:Name="surroundingsCanvas" Grid.Column="1" Grid.ColumnSpan="2" HorizontalAlignment="Center" Height="90" Margin="0,0,0,0" Grid.Row="2" VerticalAlignment="Center" Width="90" Background="White" MouseLeftButtonUp="surroundingsCanvas_MouseLeftButtonUp"/>
+
+        <StackPanel x:Name="stackPanelSurvive" Grid.Column="1" HorizontalAlignment="Center" Height="160" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Center" Width="50">
+            <TextBlock x:Name="textBlock1" TextWrapping="Wrap" Text="Buňka přežije"/>
+            <CheckBox x:Name="survive1CheckBox" Content="1" Click="surviveCheckBox_Click"/>
+            <CheckBox x:Name="survive2CheckBox" Content="2" Click="surviveCheckBox_Click"/>
+            <CheckBox x:Name="survive3CheckBox" Content="3" Click="surviveCheckBox_Click"/>
+            <CheckBox x:Name="survive4CheckBox" Content="4" Click="surviveCheckBox_Click"/>
+            <CheckBox x:Name="survive5CheckBox" Content="5" Click="surviveCheckBox_Click"/>
+            <CheckBox x:Name="survive6CheckBox" Content="6" Click="surviveCheckBox_Click"/>
+            <CheckBox x:Name="survive7CheckBox" Content="7" Click="surviveCheckBox_Click"/>
+            <CheckBox x:Name="survive8CheckBox" Content="8" Click="surviveCheckBox_Click"/>
+        </StackPanel>
+        <StackPanel x:Name="stackPanelRevive" Grid.Column="2" HorizontalAlignment="Center" Height="160" Margin="0,0,0,0" Grid.Row="3" VerticalAlignment="Center" Width="50">
+            <TextBlock x:Name="textBlock7" TextWrapping="Wrap" Text="Buňka oživne"/>
+            <CheckBox x:Name="revive1CheckBox" Content="1" Click="reviveCheckBox_Click"/>
+            <CheckBox x:Name="revive2CheckBox" Content="2" Click="reviveCheckBox_Click"/>
+            <CheckBox x:Name="revive3CheckBox" Content="3" Click="reviveCheckBox_Click"/>
+            <CheckBox x:Name="revive4CheckBox" Content="4" Click="reviveCheckBox_Click"/>
+            <CheckBox x:Name="revive5CheckBox" Content="5" Click="reviveCheckBox_Click"/>
+            <CheckBox x:Name="revive6CheckBox" Content="6" Click="reviveCheckBox_Click"/>
+            <CheckBox x:Name="revive7CheckBox" Content="7" Click="reviveCheckBox_Click"/>
+            <CheckBox x:Name="revive8CheckBox" Content="8" Click="reviveCheckBox_Click"/>
+        </StackPanel>
+
+        <TextBlock x:Name="textBlock3" Grid.Column="1" Margin="5,0,0,0" Grid.Row="4" TextWrapping="Wrap" Text="Generace:" VerticalAlignment="Center" HorizontalAlignment="Center" Width="55" Grid.ColumnSpan="1" Height="20"/>
+        <TextBox x:Name="generationTextBox" Grid.Column="2" HorizontalAlignment="Center" Height="20" Margin="0,0,0,0" Grid.Row="4" TextWrapping="Wrap" Text="1" VerticalAlignment="Center" Width="50"/>
+        <Button x:Name="generationButton" Content="Přejít na generaci" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center" Width="125" Height="20" Click="generationButton_Click"/>
+        <Button x:Name="clearButton" Content="Vymazat plochu" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="6" VerticalAlignment="Center" HorizontalAlignment="Center" Width="125" Height="20" Click="clearButton_Click"/>
+        <Button x:Name="saveButton" Grid.ColumnSpan="2" Content="Uložit" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="7" VerticalAlignment="Center" Width="125" Click="saveButton_Click"/>
+        <Button x:Name="loadButton" Grid.ColumnSpan="2" Content="Načíst" Grid.Column="1" HorizontalAlignment="Center" Margin="0,0,0,0" Grid.Row="8" VerticalAlignment="Center" Width="125" Click="loadButton_Click"/>
+
+    </Grid>
+</Window>
