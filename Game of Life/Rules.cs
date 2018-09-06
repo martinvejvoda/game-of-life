@@ -45,5 +45,37 @@ namespace Game_of_Life
             Revive = revive;
             Surroundings = surroundings;
         }
+
+        /// <summary>
+        /// Metoda, která pro danou buňku rozhodne, zdali patří do příští generace.
+        /// </summary>
+        /// <param name="cell">buňka, která bude vyhodnocena</param>
+        /// <returns>True, patří-li buňka do další generace, jinak false.</returns>
+        public Boolean EvaluationOfCell(Point cell, HashSet<Point> cells)
+        {
+            int numberOfNeighbours = 0; //počet živých sousedů buňky
+            //cyklus, který spočítá počet živých sousedů dané buňky
+            foreach (Point direction in Surroundings)
+            {
+                Point surroundingCell = new Point(cell.X + direction.X, cell.Y + direction.Y);
+                if (cells.Contains(surroundingCell))
+                    numberOfNeighbours++;
+            }
+
+            if (cells.Contains(cell))
+            {
+                //buňka žije a je tedy nutné rozhodnout, jestli přežije
+                if (Survive.Contains(numberOfNeighbours))
+                    return true;
+            }
+            else
+            {
+                //buňka je mrtvá a je tedy nutné rozhodnout, jestli obživne
+                if (Revive.Contains(numberOfNeighbours))
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

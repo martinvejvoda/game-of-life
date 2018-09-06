@@ -70,7 +70,7 @@ namespace Game_of_Life
             history = new History(rules);
 
             draw = new Draw(gameCanvas);
-            generation = new Generation(rules, 1);
+            generation = new Generation(1);
             last2Generations[0] = generation;
             last2Generations[1] = generation; 
         }
@@ -283,9 +283,9 @@ namespace Game_of_Life
         private void Timer_Elapsed(object sender, EventArgs e)
         {
             //vypočítání další generace
-            Generation nextGeneration = new Generation(rules, generation.GenerationNumber + 1, generation.NextGeneration()); //další generace
+            Generation nextGeneration = generation.NextGeneration(rules); //další generace
             last2Generations[generation.GenerationNumber % 2] = generation; //přidání aktuální generace do záznamu 2 posledních generací
-            generation = new Generation(nextGeneration.Rules, nextGeneration.GenerationNumber, nextGeneration.Cells);
+            generation = new Generation(nextGeneration.GenerationNumber, nextGeneration.Cells);
             //v případě, že se nová generace rovná předchozá nebo generaci před ní, pak jsou buňky ustáleny nebo oscilují s periodou 2
             if (nextGeneration.Cells.SetEquals(last2Generations[0].Cells) || nextGeneration.Cells.SetEquals(last2Generations[1].Cells))
                 StableOrTwoPeriodOscillation();
@@ -315,11 +315,11 @@ namespace Game_of_Life
                 generation = history.LoadRecord(generation.GenerationNumber - 1);
                 history.CurrentGeneration--;
 
-                HashSet<int> survive = new HashSet<int>(generation.Rules.Survive);
-                HashSet<int> revive = new HashSet<int>(generation.Rules.Revive);
-                HashSet<Point> surroundings = new HashSet<Point>(generation.Rules.Surroundings);
+                HashSet<int> survive = new HashSet<int>(rules.Survive);
+                HashSet<int> revive = new HashSet<int>(rules.Revive);
+                HashSet<Point> surroundings = new HashSet<Point>(rules.Surroundings);
                 rules = new Rules(survive, revive, surroundings);
-                generation = new Generation(rules, generation.GenerationNumber, generation.Cells);
+                generation = new Generation(generation.GenerationNumber, generation.Cells);
 
                 //překreslení a aktualizování všech prvků ve formuláři
                 UpdateCheckBoxes();
@@ -337,9 +337,9 @@ namespace Game_of_Life
         private void plusButton_Click(object sender, RoutedEventArgs e)
         {
             //vypočítání nové generace a její vykreslení
-            Generation nextGeneration = new Generation(rules, generation.GenerationNumber + 1, generation.NextGeneration()); //další generace
+            Generation nextGeneration = generation.NextGeneration(rules); //další generace
             last2Generations[generation.GenerationNumber % 2] = generation; //přidání aktuální generace do záznamu 2 posledních generací
-            generation = new Generation(nextGeneration.Rules, nextGeneration.GenerationNumber, nextGeneration.Cells);
+            generation = new Generation(nextGeneration.GenerationNumber, nextGeneration.Cells);
             //v případě, že se nová generace rovná předchozá nebo generaci před ní, pak jsou buňky ustáleny nebo oscilují s periodou 2
             if (nextGeneration.Cells.SetEquals(last2Generations[0].Cells) || nextGeneration.Cells.SetEquals(last2Generations[1].Cells))
                 StableOrTwoPeriodOscillation();
@@ -382,9 +382,9 @@ namespace Game_of_Life
                     //přeskočení na danou generaci pomocí počítání generací před ní
                     for (int i = 0; i < difference; i++)
                     {
-                        nextGeneration = new Generation(rules, generation.GenerationNumber + 1, generation.NextGeneration()); //následující generace
+                        nextGeneration = generation.NextGeneration(rules); //následující generace
                         last2Generations[generation.GenerationNumber % 2] = generation; //přidání aktuální generace do záznamu 2 posledních generací
-                        generation = new Generation(nextGeneration.Rules, nextGeneration.GenerationNumber, nextGeneration.Cells);                        
+                        generation = new Generation(nextGeneration.GenerationNumber, nextGeneration.Cells);                        
                     }
                     //v případě, že se nová generace rovná předchozá nebo generaci před ní, pak jsou buňky ustáleny nebo oscilují s periodou 2
                     if (nextGeneration.Cells.SetEquals(last2Generations[0].Cells) || nextGeneration.Cells.SetEquals(last2Generations[1].Cells))
@@ -396,11 +396,11 @@ namespace Game_of_Life
                     generation = history.LoadRecord(genNumber);
                     history.CurrentGeneration = generation.GenerationNumber;
 
-                    HashSet<int> survive = new HashSet<int>(generation.Rules.Survive);
-                    HashSet<int> revive = new HashSet<int>(generation.Rules.Revive);
-                    HashSet<Point> surroundings = new HashSet<Point>(generation.Rules.Surroundings);
+                    HashSet<int> survive = new HashSet<int>(rules.Survive);
+                    HashSet<int> revive = new HashSet<int>(rules.Revive);
+                    HashSet<Point> surroundings = new HashSet<Point>(rules.Surroundings);
                     rules = new Rules(survive, revive, surroundings);
-                    generation = new Generation(rules, generation.GenerationNumber, generation.Cells);           
+                    generation = new Generation(generation.GenerationNumber, generation.Cells);           
                 }
 
                 //překreslení a aktualizování všech prvků ve formuláři
@@ -419,7 +419,7 @@ namespace Game_of_Life
         /// <param name="e"></param>
         private void clearButton_Click(object sender, RoutedEventArgs e)
         {
-            generation = new Generation(rules, 1); //zabití všech buněk
+            generation = new Generation(1); //zabití všech buněk
             last2Generations[0] = generation;
             last2Generations[1] = generation;
             generationTextBox.Text = "1";

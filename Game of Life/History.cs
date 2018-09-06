@@ -12,7 +12,7 @@ namespace Game_of_Life
         /// <summary>
         /// List obsahující historii - zaznamenávány jsou pouze generace, pří kterých došlo k zásahu uživatele
         /// </summary>
-        public List<Generation> Changelog { get; set; }
+        public List<Record> Changelog { get; set; }
         /// <summary>
         /// Pořadové číslo aktuální vkreslené generace.
         /// </summary>
@@ -20,7 +20,7 @@ namespace Game_of_Life
 
         public History()
         {
-            Changelog = new List<Generation>();
+            Changelog = new List<Record>();
             CurrentGeneration = new int();
         }
 
@@ -30,17 +30,18 @@ namespace Game_of_Life
         /// <param name="rules">pravidla hry</param>
         public History(Rules rules)
         {
-            Changelog = new List<Generation>();
+            Changelog = new List<Record>();
 
             HashSet<int> survive = new HashSet<int>(rules.Survive);
             HashSet<int> revive = new HashSet<int>(rules.Revive);
             HashSet<Point> surroundings = new HashSet<Point>(rules.Surroundings);
 
             Rules r = new Rules(survive, revive, surroundings);
-            Generation generation = new Generation(r, 1);
+            Generation generation = new Generation(1);
 
+            Record record = new Record(r, generation);
             CurrentGeneration = 1;
-            Changelog.Add(generation);
+            Changelog.Add(record);
         }
 
         /// <summary>
@@ -48,23 +49,22 @@ namespace Game_of_Life
         /// je tato poslední generace přepsána.
         /// </summary>
         /// <param name="g">Generace, která se má uložit.</param>
-        public void AddRecord(Generation g)
+        public void AddRecord(Rules r, Generation g)
         {
-            HashSet<int> survive = new HashSet<int>(g.Rules.Survive);
-            HashSet<int> revive = new HashSet<int>(g.Rules.Revive);
-            HashSet<Point> surroundings = new HashSet<Point>(g.Rules.Surroundings);
+            HashSet<int> survive = new HashSet<int>(r.Survive);
+            HashSet<int> revive = new HashSet<int>(r.Revive);
+            HashSet<Point> surroundings = new HashSet<Point>(r.Surroundings);
 
-            Rules r = new Rules(survive, revive, surroundings);
-            Generation generation = new Generation(r, g.GenerationNumber, g.Cells);
+            Rules rules = new Rules(survive, revive, surroundings);
+            Generation generation = new Generation(g.GenerationNumber, g.Cells);
+
+            Record record = new Record(rules, generation);
 
             //pokud předchozí záznam je ze stejné generace, je nutné ho nahradit
-            if (Changelog[Changelog.Count - 1].GenerationNumber == generation.GenerationNumber)
-            {
+            if (Changelog[Changelog.Count - 1].Generation.GenerationNumber == generation.GenerationNumber)
                 Changelog.RemoveAt(Changelog.Count - 1);
-                Changelog.Add(generation);
-            }
-            else
-                Changelog.Add(generation);
+
+             Changelog.Add(record);
 
             CurrentGeneration = generation.GenerationNumber; //číslo aktuální vykreslené generace
         }
@@ -76,23 +76,22 @@ namespace Game_of_Life
         /// <returns>Metoda vrací generaci s požadovaným pořadovým číslem.</returns>
         public Generation LoadRecord(int number)
         {
-            Generation wantedGeneration = Changelog[0]; //generace s požadovaným pořadovým číslem
-            Generation loadedRecord = Changelog[0]; //záznam načtený z Changelogu
+            Generation wantedGeneration = Changelog[0].Generation; //generace s požadovaným pořadovým číslem
+            Generation loadedRecord = Changelog[0].Generation; //záznam načtený z Changelogu
 
             for (int i = 0; i < Changelog.Count; i++)
             {
                 //získání generace, která předchází požadované generaci
                 //generaace jsou řazeny chronologicky
-                if (Changelog[i].GenerationNumber < number)
-                    loadedRecord = Changelog[i];
+                if (Changelog[i].Generation.GenerationNumber < number)
+                    loadedRecord = Changelog[i].Generation;
             }
 
             int difference = number - loadedRecord.GenerationNumber; //počet generací mezi načteným záznamem a požadovanou generací
             wantedGeneration = loadedRecord;
             //dopočítání požadované generace
             for (int i = 0; i < difference; i++)
-                wantedGeneration = new Generation(wantedGeneration.Rules, 
-                                                  wantedGeneration.GenerationNumber + 1, wantedGeneration.NextGeneration());
+                wantedGeneration = new Generation(wantedGeneration.GenerationNumber + 1, wantedGeneration.NextGeneration());
 
             int serialNumber = Changelog.IndexOf(loadedRecord); //pořadové číslo záznamu v Changelogu, který předchází požadované generaci
             //vymazání všech generací, které následují

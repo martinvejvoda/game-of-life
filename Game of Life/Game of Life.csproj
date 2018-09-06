@@ -54,6 +54,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Record.cs" />
     <Compile Include="Draw.cs" />
     <Compile Include="Generation.cs" />
     <Compile Include="History.cs" />
